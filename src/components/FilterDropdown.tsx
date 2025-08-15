@@ -48,10 +48,10 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex items-center justify-between w-full px-4 py-3 text-left bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200"
+				className="flex items-center justify-between min-w-[140px] w-full px-4 py-3 text-left bg-white border border-gray-200 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200"
 			>
 				<span className="flex items-center">
-					<span className="text-gray-700 font-medium">{label}</span>
+					<span className="text-gray-700 font-medium truncate">{label}</span>
 					{selectedValues.length > 0 && (
 						<span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
 							{selectedValues.length}
@@ -59,7 +59,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
 					)}
 				</span>
 				<svg
-					className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+					className={`h-4 w-4 text-gray-400 transition-transform flex-shrink-0 ml-2 ${isOpen ? "rotate-180" : ""}`}
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -75,7 +75,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
 			</button>
 
 			{isOpen && (
-				<div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg">
+				<div className="absolute z-10 min-w-[200px] w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg">
 					<div className="p-2">
 						{selectedValues.length > 0 && (
 							<button
@@ -89,7 +89,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
 									stroke="currentColor"
 									viewBox="0 0 24 24"
 								>
-									<title>Clear all</title>
+									<title>Clear all icon</title>
 									<path
 										strokeLinecap="round"
 										strokeLinejoin="round"
@@ -111,7 +111,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
 									onChange={() => toggleOption(option)}
 									className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
 								/>
-								<span className="ml-3 text-sm text-gray-700 capitalize">
+								<span className="ml-3 text-sm text-gray-700 capitalize whitespace-nowrap">
 									{option}
 								</span>
 							</label>

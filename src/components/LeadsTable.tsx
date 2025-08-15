@@ -100,7 +100,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 							/>
 						</div>
 
-						<div className="flex gap-3">
+						<div className="flex flex-col sm:flex-row sm:flex-shrink-0 gap-3">
 							<FilterDropdown
 								label="Source"
 								options={uniqueSources}
