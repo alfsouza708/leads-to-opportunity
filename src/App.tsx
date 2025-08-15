@@ -1,4 +1,5 @@
-import React from "react";
+import { LeadsTable } from "./components/LeadsTable";
+import { mockLeads } from "./data/mockLeads";
 
 function App() {
 	return (
@@ -13,6 +14,8 @@ function App() {
 							Track, filter, and manage your sales leads effectively
 						</p>
 					</div>
+
+					<LeadsTable leads={mockLeads} />
 				</div>
 			</div>
 		</div>
