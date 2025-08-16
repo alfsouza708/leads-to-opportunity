@@ -7,9 +7,11 @@ import { OpportunityTable } from "./OpportunityTable";
 interface SalesDashboardProps {
 	leads: Lead[];
 	opportunities: Opportunity[];
+	onConvertLead: (lead: Lead) => void;
+	isLoading: boolean;
 }
 
-export const SalesDashboard: React.FC<SalesDashboardProps> = ({ leads, opportunities }) => {
+export const SalesDashboard: React.FC<SalesDashboardProps> = ({ leads, opportunities, onConvertLead, isLoading }) => {
 	const [activeTab, setActiveTab] = useState<"leads" | "opportunities">("leads");
 
 	return (
@@ -31,7 +33,7 @@ export const SalesDashboard: React.FC<SalesDashboardProps> = ({ leads, opportuni
 				</nav>
 			</div>
 			<div>
-				{activeTab === "leads" && <LeadsTable leads={leads} />}
+				{activeTab === "leads" && <LeadsTable leads={leads} onConvertLead={onConvertLead} isLoading={isLoading} />}
 				{activeTab === "opportunities" && <OpportunityTable opportunities={opportunities} />}
 			</div>
 		</div>

@@ -1,4 +1,5 @@
 import type { Opportunity } from "../types/opportunity";
+import { StageBadge } from "./StageBadge";
 import { TableHeader } from "./TableHeader";
 
 interface OpportunityTableProps {
@@ -59,7 +60,7 @@ export const OpportunityTable: React.FC<OpportunityTableProps> = ({
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
 										<div className="text-sm text-gray-900">
-											{opportunity.stage}
+											<StageBadge stage={opportunity.stage} />
 										</div>
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">

@@ -9,9 +9,11 @@ import { TableHeader } from "./TableHeader";
 
 interface LeadsTableProps {
 	leads: Lead[];
+	onConvertLead: (lead: Lead) => void;
+	isLoading: boolean;
 }
 
-export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
+export const LeadsTable: React.FC<LeadsTableProps> = ({ leads, onConvertLead, isLoading }) => {
 	const [leadsData, setLeadsData] = useState(leads);
 	const [editingCell, setEditingCell] = useState<{
 		leadId: number;
@@ -346,6 +348,8 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 				lead={selectedLead}
 				isOpen={isPanelOpen}
 				onClose={handleClosePanel}
+				onConvertLead={onConvertLead}
+				isLoading={isLoading}
 			/>
 		</>
 	);
