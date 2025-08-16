@@ -2,6 +2,7 @@ import type React from "react";
 import { useMemo, useState } from "react";
 import type { Lead, SortDirection, SortField } from "../types/leads";
 import { FilterDropdown } from "./FilterDropdown";
+import { LeadDetailsPanel } from "./LeadDetailsPanel";
 import { ScoreBadge } from "./ScoreBadge";
 import { SearchBar } from "./SearchBar";
 import { StatusBadge } from "./StatusBadge";
@@ -17,6 +18,8 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 	const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 	const [sourceFilters, setSourceFilters] = useState<string[]>([]);
 	const [statusFilters, setStatusFilters] = useState<string[]>([]);
+	const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+	const [isPanelOpen, setIsPanelOpen] = useState(false);
 
 	const uniqueSources = useMemo(() => {
 		return Array.from(new Set(leads.map((lead) => lead.source)));
@@ -77,8 +80,19 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 		}
 	};
 
+	const handleRowClick = (lead: Lead) => {
+		setSelectedLead(lead);
+		setIsPanelOpen(true);
+	};
+
+	const handleClosePanel = () => {
+		setIsPanelOpen(false);
+		setSelectedLead(null);
+	};
+
 	return (
-		<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+		<>
+			<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
 			{/* Header with Search and Filters */}
 			<div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
 				<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
@@ -182,7 +196,8 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 						{filteredAndSortedLeads.map((lead, index) => (
 							<tr
 								key={lead.id}
-								className={`hover:bg-gray-50 transition-colors ${
+								onClick={() => handleRowClick(lead)}
+								className={`hover:bg-blue-50 cursor-pointer transition-colors ${
 									index % 2 === 0 ? "bg-white" : "bg-gray-25"
 								}`}
 							>
@@ -225,6 +240,12 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 					</div>
 				)}
 			</div>
-		</div>
+
+			<LeadDetailsPanel
+				lead={selectedLead}
+				isOpen={isPanelOpen}
+				onClose={handleClosePanel}
+			/>
+		</>
 	);
 };
