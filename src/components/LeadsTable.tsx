@@ -1,4 +1,3 @@
-import type React from "react";
 import { useMemo, useState } from "react";
 import type { Lead, SortDirection, SortField } from "../types/leads";
 import { FilterDropdown } from "./FilterDropdown";
@@ -31,7 +30,9 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 				lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				lead.company.toLowerCase().includes(searchTerm.toLowerCase());
 
-			return matchesSearch;
+			const matchesStatus = statusFilters.length === 0 || statusFilters.includes(lead.status);
+
+			return matchesSearch && matchesStatus;
 		});
 
 		if (sortField) {
@@ -51,14 +52,19 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 		}
 
 		return filtered;
-	}, [leads, searchTerm, sortField, sortDirection]);
+	}, [leads, searchTerm, sortField, sortDirection, statusFilters]);
 
 	const handleSort = (field: SortField) => {
 		if (sortField === field) {
-			setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+			if (sortDirection === "desc") {
+				setSortDirection("asc");
+			} else {
+				setSortField(null);
+				setSortDirection("desc");
+			}
 		} else {
 			setSortField(field);
-			setSortDirection("asc");
+			setSortDirection("desc");
 		}
 	};
 
@@ -118,7 +124,6 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									label="ID"
 									sortField={sortField}
 									sortDirection={sortDirection}
-									onSort={handleSort}
 									className="w-20"
 								/>
 								<TableHeader
@@ -126,28 +131,24 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									label="Name"
 									sortField={sortField}
 									sortDirection={sortDirection}
-									onSort={handleSort}
 								/>
 								<TableHeader
 									field="company"
 									label="Company"
 									sortField={sortField}
 									sortDirection={sortDirection}
-									onSort={handleSort}
 								/>
 								<TableHeader
 									field="email"
 									label="Email"
 									sortField={sortField}
 									sortDirection={sortDirection}
-									onSort={handleSort}
 								/>
 								<TableHeader
 									field="source"
 									label="Source"
 									sortField={sortField}
 									sortDirection={sortDirection}
-									onSort={handleSort}
 								/>
 								<TableHeader
 									field="score"
@@ -162,7 +163,6 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									label="Status"
 									sortField={sortField}
 									sortDirection={sortDirection}
-									onSort={handleSort}
 									className="w-32"
 								/>
 							</tr>
