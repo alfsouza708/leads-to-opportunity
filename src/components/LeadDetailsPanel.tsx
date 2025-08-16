@@ -19,6 +19,7 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 	isLoading,
 }) => {
 	const [show, setShow] = useState(false);
+	const [showConfirmation, setShowConfirmation] = useState(false);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -32,6 +33,14 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 	}, [isOpen]);
 
 	if (!lead) return null;
+
+	const handleConvertLead = () => {
+		onConvertLead(lead);
+		setShowConfirmation(true);
+		setTimeout(() => {
+			setShowConfirmation(false);
+		}, 3000); // Show confirmation for 3 seconds
+	};
 
 	return (
 		<>
@@ -197,7 +206,6 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 												⚡ Moderate lead quality, requires nurturing
 											</p>
 										)}
-										.
 										{lead.score < 60 && (
 											<p className="text-red-700">
 												📈 Low score, may need qualification or re-evaluation
@@ -223,7 +231,7 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 									lead.status === "unqualified" ||
 									lead.status === "converted"
 								}
-								onClick={() => onConvertLead(lead)}
+								onClick={handleConvertLead}
 							>
 								{isLoading && (
 									<svg
@@ -249,6 +257,11 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 								)}
 								{isLoading ? "Converting..." : "Convert Lead"}
 							</button>
+							{showConfirmation && (
+								<div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-center font-medium">
+									Lead successfully converted to Opportunity!
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
