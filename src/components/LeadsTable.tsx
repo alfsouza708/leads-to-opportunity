@@ -224,7 +224,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									<td className="px-6 py-4 whitespace-nowrap">
 										<div className="text-sm text-gray-900">{lead.company}</div>
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => { e.stopPropagation(); if (editingCell?.leadId !== lead.id || editingCell?.field !== 'email') { handleEditCell(lead.id, "email"); } }}>
 										{editingCell?.leadId === lead.id && editingCell?.field === "email" ? (
 											<input
 												type="text"
@@ -237,7 +237,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 												autoFocus
 											/>
 										) : (
-											<div className="text-sm text-gray-600" onClick={(e) => { e.stopPropagation(); handleEditCell(lead.id, "email"); }}>{lead.email}</div>
+											<div className="text-sm text-gray-600">{lead.email}</div>
 										)}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
@@ -248,7 +248,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									<td className="px-6 py-4 whitespace-nowrap">
 										<ScoreBadge score={lead.score} />
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => { e.stopPropagation(); if (editingCell?.leadId !== lead.id || editingCell?.field !== 'status') { handleEditCell(lead.id, "status"); } }}>
 										{editingCell?.leadId === lead.id && editingCell?.field === "status" ? (
 											<select
 												defaultValue={lead.status}
@@ -259,7 +259,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 												{uniqueStatuses.map(status => <option key={status} value={status}>{status}</option>)}
 											</select>
 										) : (
-											<div onClick={(e) => { e.stopPropagation(); handleEditCell(lead.id, "status"); }}>
+											<div>
 												<StatusBadge status={lead.status} />
 											</div>
 										)}
