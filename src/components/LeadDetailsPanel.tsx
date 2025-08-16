@@ -1,4 +1,4 @@
-import type React from "react";
+import { useEffect, useState } from "react";
 import type { Lead } from "../types/leads";
 import { ScoreBadge } from "./ScoreBadge";
 import { StatusBadge } from "./StatusBadge";
@@ -14,26 +14,39 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 	isOpen,
 	onClose,
 }) => {
+	const [show, setShow] = useState(false);
+
+	useEffect(() => {
+		if (isOpen) {
+			const timer = setTimeout(() => {
+				setShow(true);
+			}, 10);
+			return () => clearTimeout(timer);
+		} else {
+			setShow(false);
+		}
+	}, [isOpen]);
+
 	if (!lead) return null;
 
 	return (
 		<>
 			{/* Backdrop */}
-			{isOpen && (
-				<div
-					className="fixed inset-0  bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"
-					onClick={onClose}
-				/>
-			)}
+			<div
+				className={`fixed inset-0  z-40 transition-opacity duration-300 ease-in-out ${
+					show ? "bg-opacity-50" : "bg-opacity-0"
+				}`}
+				onClick={onClose}
+			/>
 
 			{/* Slide-over panel */}
 			<div
-				className={`fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl z-50 transform transition-transform duration-500 ease-in-out ${
-					isOpen ? "translate-x-0" : "translate-x-full"
+				className={`fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+					show ? "translate-x-0" : "translate-x-full"
 				}`}
 			>
 				<div
-					className={`flex flex-col h-full transition-opacity duration-300 ease-in-out delay-200 ${isOpen ? "opacity-100" : "opacity-0"}`}
+					className={`flex flex-col h-full transition-opacity duration-300 ease-in-out delay-100 ${show ? "opacity-100" : "opacity-0"}`}
 				>
 					{/* Header */}
 					<div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -180,6 +193,7 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 												⚡ Moderate lead quality, requires nurturing
 											</p>
 										)}
+										.
 										{lead.score < 60 && (
 											<p className="text-red-700">
 												📈 Low score, may need qualification or re-evaluation
@@ -221,3 +235,4 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 		</>
 	);
 };
+

@@ -102,7 +102,9 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 
 	const handleClosePanel = () => {
 		setIsPanelOpen(false);
-		setSelectedLead(null);
+		setTimeout(() => {
+			setSelectedLead(null);
+		}, 300);
 	};
 
 	return (
