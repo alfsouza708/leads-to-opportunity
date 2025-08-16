@@ -16,14 +16,9 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortField, setSortField] = useState<SortField | null>("score");
 	const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-	const [sourceFilters, setSourceFilters] = useState<string[]>([]);
 	const [statusFilters, setStatusFilters] = useState<string[]>([]);
 	const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 	const [isPanelOpen, setIsPanelOpen] = useState(false);
-
-	const uniqueSources = useMemo(() => {
-		return Array.from(new Set(leads.map((lead) => lead.source)));
-	}, [leads]);
 
 	const uniqueStatuses = useMemo(() => {
 		return Array.from(new Set(leads.map((lead) => lead.status)));
@@ -37,12 +32,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 				lead.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				lead.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-			const matchesSource =
-				sourceFilters.length === 0 || sourceFilters.includes(lead.source);
-			const matchesStatus =
-				statusFilters.length === 0 || statusFilters.includes(lead.status);
-
-			return matchesSearch && matchesSource && matchesStatus;
+			return matchesSearch;
 		});
 
 		if (sortField) {
@@ -62,14 +52,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 		}
 
 		return filtered;
-	}, [
-		leads,
-		searchTerm,
-		sortField,
-		sortDirection,
-		sourceFilters,
-		statusFilters,
-	]);
+	}, [leads, searchTerm, sortField, sortDirection]);
 
 	const handleSort = (field: SortField) => {
 		if (sortField === field) {
@@ -92,7 +75,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 
 	return (
 		<>
-			<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+			<div className="bg-white rounded-2xl shadow-xl border border-gray-100">
 				{/* Header with Search and Filters */}
 				<div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
 					<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
@@ -115,13 +98,6 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 							</div>
 
 							<div className="flex flex-col sm:flex-row sm:flex-shrink-0 gap-3">
-								<FilterDropdown
-									label="Source"
-									options={uniqueSources}
-									selectedValues={sourceFilters}
-									onChange={setSourceFilters}
-								/>
-
 								<FilterDropdown
 									label="Status"
 									options={uniqueStatuses}
