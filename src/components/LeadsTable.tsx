@@ -241,7 +241,6 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 				)}
 			</div>
 		</div>
-			</div>
 
 			<LeadDetailsPanel
 				lead={selectedLead}
