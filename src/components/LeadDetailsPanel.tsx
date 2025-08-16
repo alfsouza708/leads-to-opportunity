@@ -213,7 +213,12 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 										? "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
 										: "bg-gray-300 text-gray-500 cursor-not-allowed"
 								}`}
-								disabled={lead.score < 60 || isLoading}
+								disabled={
+									lead.score < 60 ||
+									isLoading ||
+									lead.status === "unqualified" ||
+									lead.status === "converted"
+								}
 								onClick={() => onConvertLead(lead)}
 							>
 								{isLoading && (
