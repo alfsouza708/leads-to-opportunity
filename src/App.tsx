@@ -1,4 +1,4 @@
-import { LeadsTable } from "./components/LeadsTable";
+import { SalesDashboard } from "./components/SalesDashboard";
 import { mockLeads } from "./data/mockLeads";
 
 function App() {
@@ -8,14 +8,14 @@ function App() {
 				<div className="max-w-7xl mx-auto">
 					<div className="mb-8 text-center">
 						<h1 className="text-4xl font-bold text-gray-900 mb-2">
-							Lead Management System
+							Sales Dashboard
 						</h1>
 						<p className="text-lg text-gray-600">
-							Track, filter, and manage your sales leads effectively
+							Track, filter, and manage your sales leads and opportunities effectively
 						</p>
 					</div>
 
-					<LeadsTable leads={mockLeads} />
+					<SalesDashboard leads={mockLeads} opportunities={[]} />
 				</div>
 			</div>
 		</div>
