@@ -14,6 +14,7 @@ interface LeadsTableProps {
 export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 	const [leadsData, setLeadsData] = useState(leads);
 	const [editingCell, setEditingCell] = useState<{ leadId: number; field: "email" | "status" } | null>(null);
+	const [error, setError] = useState<string | null>(null);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortField, setSortField] = useState<SortField | null>("score");
 	const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -35,12 +36,19 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 
 	const handleUpdateLead = (leadId: number, field: "email" | "status", value: string) => {
 		if (field === "email" && !validateEmail(value)) {
-			// Here you could add some user feedback for invalid email
+			setError("Invalid email format. The value was not saved.");
+			setEditingCell(null);
 			return;
 		}
+		setError(null);
 		setLeadsData(leadsData.map(lead => lead.id === leadId ? { ...lead, [field]: value } : lead));
 		setEditingCell(null);
 	};
+
+	const handleEditCell = (leadId: number, field: "email" | "status") => {
+		setError(null);
+		setEditingCell({ leadId, field });
+	}
 
 	const filteredAndSortedLeads = useMemo(() => {
 		const filtered = leadsData.filter((lead) => {
@@ -102,6 +110,14 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 			<div className="bg-white rounded-2xl shadow-xl border border-gray-100">
 				{/* Header with Search and Filters */}
 				<div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+					{error && (
+						<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+							<span className="block sm:inline">{error}</span>
+							<span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setError(null)}>
+								<svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+							</span>
+						</div>
+					)}
 					<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
 						<div>
 							<h2 className="text-2xl font-bold text-gray-900">
@@ -219,7 +235,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 												autoFocus
 											/>
 										) : (
-											<div className="text-sm text-gray-600" onClick={(e) => { e.stopPropagation(); setEditingCell({ leadId: lead.id, field: "email" }); }}>{lead.email}</div>
+											<div className="text-sm text-gray-600" onClick={(e) => { e.stopPropagation(); handleEditCell(lead.id, "email"); }}>{lead.email}</div>
 										)}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
@@ -241,7 +257,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 												{uniqueStatuses.map(status => <option key={status} value={status}>{status}</option>)}
 											</select>
 										) : (
-											<div onClick={(e) => { e.stopPropagation(); setEditingCell({ leadId: lead.id, field: "status" }); }}>
+											<div onClick={(e) => { e.stopPropagation(); handleEditCell(lead.id, "status"); }}>
 												<StatusBadge status={lead.status} />
 											</div>
 										)}

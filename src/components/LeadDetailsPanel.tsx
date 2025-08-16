@@ -21,18 +21,20 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 			{/* Backdrop */}
 			{isOpen && (
 				<div
-					className="fixed inset-0 bg-opacity-50 z-40 transition-opacity"
+					className="fixed inset-0  bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"
 					onClick={onClose}
 				/>
 			)}
 
 			{/* Slide-over panel */}
 			<div
-				className={`fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+				className={`fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-xl z-50 transform transition-transform duration-500 ease-in-out ${
 					isOpen ? "translate-x-0" : "translate-x-full"
 				}`}
 			>
-				<div className="flex flex-col h-full">
+				<div
+					className={`flex flex-col h-full transition-opacity duration-300 ease-in-out delay-200 ${isOpen ? "opacity-100" : "opacity-0"}`}
+				>
 					{/* Header */}
 					<div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
 						<div className="flex items-center justify-between">
