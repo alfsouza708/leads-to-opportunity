@@ -207,9 +207,13 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 								</div>
 							</div>
 
+							{/* convert to lead conditional can be improved. it depends on the business rules. */}
 							<button
 								className={`w-full flex items-center justify-center px-4 py-2 rounded-lg transition-colors font-bold ${
-									lead.score >= 60 && !isLoading
+									lead.score >= 60 &&
+									!isLoading &&
+									lead.status !== "unqualified" &&
+									lead.status !== "converted"
 										? "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
 										: "bg-gray-300 text-gray-500 cursor-not-allowed"
 								}`}
