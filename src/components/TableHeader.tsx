@@ -1,23 +1,22 @@
-import type React from "react";
-import type { SortDirection, SortField } from "../types/leads";
+import type { SortDirection } from "../types/leads";
 
-interface TableHeaderProps {
-	field: SortField;
+interface TableHeaderProps<T> {
+	field: keyof T;
 	label: string;
-	sortField?: SortField | null;
+	sortField?: keyof T | null;
 	sortDirection?: SortDirection;
-	onSort?: (field: SortField) => void;
+	onSort?: (field: keyof T) => void;
 	className?: string;
 }
 
-export const TableHeader: React.FC<TableHeaderProps> = ({
+export const TableHeader = <T extends object>({
 	field,
 	label,
 	sortField,
 	sortDirection,
 	onSort,
 	className = "",
-}) => {
+}: TableHeaderProps<T>) => {
 	const isSorted = sortField === field;
 	const isSortable = onSort !== undefined;
 

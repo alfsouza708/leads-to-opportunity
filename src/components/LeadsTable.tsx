@@ -13,7 +13,10 @@ interface LeadsTableProps {
 
 export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 	const [leadsData, setLeadsData] = useState(leads);
-	const [editingCell, setEditingCell] = useState<{ leadId: number; field: "email" | "status" } | null>(null);
+	const [editingCell, setEditingCell] = useState<{
+		leadId: number;
+		field: "email" | "status";
+	} | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortField, setSortField] = useState<SortField | null>("score");
@@ -34,21 +37,29 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 		return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 	};
 
-	const handleUpdateLead = (leadId: number, field: "email" | "status", value: string) => {
+	const handleUpdateLead = (
+		leadId: number,
+		field: "email" | "status",
+		value: string,
+	) => {
 		if (field === "email" && !validateEmail(value)) {
 			setError("Invalid email format. The value was not saved.");
 			setEditingCell(null);
 			return;
 		}
 		setError(null);
-		setLeadsData(leadsData.map(lead => lead.id === leadId ? { ...lead, [field]: value } : lead));
+		setLeadsData(
+			leadsData.map((lead) =>
+				lead.id === leadId ? { ...lead, [field]: value } : lead,
+			),
+		);
 		setEditingCell(null);
 	};
 
 	const handleEditCell = (leadId: number, field: "email" | "status") => {
 		setError(null);
 		setEditingCell({ leadId, field });
-	}
+	};
 
 	const filteredAndSortedLeads = useMemo(() => {
 		const filtered = leadsData.filter((lead) => {
@@ -57,7 +68,8 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 				lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				lead.company.toLowerCase().includes(searchTerm.toLowerCase());
 
-			const matchesStatus = statusFilters.length === 0 || statusFilters.includes(lead.status);
+			const matchesStatus =
+				statusFilters.length === 0 || statusFilters.includes(lead.status);
 
 			return matchesSearch && matchesStatus;
 		});
@@ -113,10 +125,23 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 				{/* Header with Search and Filters */}
 				<div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
 					{error && (
-						<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+						<div
+							className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+							role="alert"
+						>
 							<span className="block sm:inline">{error}</span>
-							<span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setError(null)}>
-								<svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+							<span
+								className="absolute top-0 bottom-0 right-0 px-4 py-3"
+								onClick={() => setError(null)}
+							>
+								<svg
+									className="fill-current h-6 w-6 text-red-500"
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 20 20"
+								>
+									<title>Close</title>
+									<path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+								</svg>
 							</span>
 						</div>
 					)}
@@ -156,38 +181,38 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 					<table className="min-w-full divide-y divide-gray-200">
 						<thead className="bg-gray-50">
 							<tr>
-								<TableHeader
+								<TableHeader<Lead>
 									field="id"
 									label="ID"
 									sortField={sortField}
 									sortDirection={sortDirection}
 									className="w-20"
 								/>
-								<TableHeader
+								<TableHeader<Lead>
 									field="name"
 									label="Name"
 									sortField={sortField}
 									sortDirection={sortDirection}
 								/>
-								<TableHeader
+								<TableHeader<Lead>
 									field="company"
 									label="Company"
 									sortField={sortField}
 									sortDirection={sortDirection}
 								/>
-								<TableHeader
+								<TableHeader<Lead>
 									field="email"
 									label="Email"
 									sortField={sortField}
 									sortDirection={sortDirection}
 								/>
-								<TableHeader
+								<TableHeader<Lead>
 									field="source"
 									label="Source"
 									sortField={sortField}
 									sortDirection={sortDirection}
 								/>
-								<TableHeader
+								<TableHeader<Lead>
 									field="score"
 									label="Score"
 									sortField={sortField}
@@ -195,7 +220,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									onSort={handleSort}
 									className="w-24"
 								/>
-								<TableHeader
+								<TableHeader<Lead>
 									field="status"
 									label="Status"
 									sortField={sortField}
@@ -224,17 +249,35 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									<td className="px-6 py-4 whitespace-nowrap">
 										<div className="text-sm text-gray-900">{lead.company}</div>
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => { e.stopPropagation(); if (editingCell?.leadId !== lead.id || editingCell?.field !== 'email') { handleEditCell(lead.id, "email"); } }}>
-										{editingCell?.leadId === lead.id && editingCell?.field === "email" ? (
+									<td
+										className="px-6 py-4 whitespace-nowrap"
+										onClick={(e) => {
+											e.stopPropagation();
+											if (
+												editingCell?.leadId !== lead.id ||
+												editingCell?.field !== "email"
+											) {
+												handleEditCell(lead.id, "email");
+											}
+										}}
+									>
+										{editingCell?.leadId === lead.id &&
+										editingCell?.field === "email" ? (
 											<input
 												type="text"
 												defaultValue={lead.email}
-												onBlur={(e) => handleUpdateLead(lead.id, "email", e.target.value)}
+												onBlur={(e) =>
+													handleUpdateLead(lead.id, "email", e.target.value)
+												}
 												onKeyDown={(e) => {
-													if (e.key === "Enter") handleUpdateLead(lead.id, "email", e.currentTarget.value);
+													if (e.key === "Enter")
+														handleUpdateLead(
+															lead.id,
+															"email",
+															e.currentTarget.value,
+														);
 													if (e.key === "Escape") setEditingCell(null);
 												}}
-												autoFocus
 											/>
 										) : (
 											<div className="text-sm text-gray-600">{lead.email}</div>
@@ -248,15 +291,34 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									<td className="px-6 py-4 whitespace-nowrap">
 										<ScoreBadge score={lead.score} />
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => { e.stopPropagation(); if (editingCell?.leadId !== lead.id || editingCell?.field !== 'status') { handleEditCell(lead.id, "status"); } }}>
-										{editingCell?.leadId === lead.id && editingCell?.field === "status" ? (
+									<td
+										className="px-6 py-4 whitespace-nowrap"
+										onClick={(e) => {
+											e.stopPropagation();
+											if (
+												editingCell?.leadId !== lead.id ||
+												editingCell?.field !== "status"
+											) {
+												handleEditCell(lead.id, "status");
+											}
+										}}
+									>
+										{editingCell?.leadId === lead.id &&
+										editingCell?.field === "status" ? (
 											<select
 												defaultValue={lead.status}
-												onBlur={(e) => handleUpdateLead(lead.id, "status", e.target.value)}
-												onChange={(e) => handleUpdateLead(lead.id, "status", e.target.value)}
-												autoFocus
+												onBlur={(e) =>
+													handleUpdateLead(lead.id, "status", e.target.value)
+												}
+												onChange={(e) =>
+													handleUpdateLead(lead.id, "status", e.target.value)
+												}
 											>
-												{uniqueStatuses.map(status => <option key={status} value={status}>{status}</option>)}
+												{uniqueStatuses.map((status) => (
+													<option key={status} value={status}>
+														{status}
+													</option>
+												))}
 											</select>
 										) : (
 											<div>
