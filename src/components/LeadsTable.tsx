@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Lead, SortDirection, SortField } from "../types/leads";
 import { FilterDropdown } from "./FilterDropdown";
 import { LeadDetailsPanel } from "./LeadDetailsPanel";
@@ -12,6 +12,8 @@ interface LeadsTableProps {
 }
 
 export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
+	const [leadsData, setLeadsData] = useState(leads);
+	const [editingCell, setEditingCell] = useState<{ leadId: number; field: "email" | "status" } | null>(null);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortField, setSortField] = useState<SortField | null>("score");
 	const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -19,12 +21,29 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 	const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 	const [isPanelOpen, setIsPanelOpen] = useState(false);
 
-	const uniqueStatuses = useMemo(() => {
-		return Array.from(new Set(leads.map((lead) => lead.status)));
+	useEffect(() => {
+		setLeadsData(leads);
 	}, [leads]);
 
+	const uniqueStatuses = useMemo(() => {
+		return Array.from(new Set(leadsData.map((lead) => lead.status)));
+	}, [leadsData]);
+
+	const validateEmail = (email: string) => {
+		return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+	};
+
+	const handleUpdateLead = (leadId: number, field: "email" | "status", value: string) => {
+		if (field === "email" && !validateEmail(value)) {
+			// Here you could add some user feedback for invalid email
+			return;
+		}
+		setLeadsData(leadsData.map(lead => lead.id === leadId ? { ...lead, [field]: value } : lead));
+		setEditingCell(null);
+	};
+
 	const filteredAndSortedLeads = useMemo(() => {
-		const filtered = leads.filter((lead) => {
+		const filtered = leadsData.filter((lead) => {
 			const matchesSearch =
 				!searchTerm ||
 				lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -52,7 +71,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 		}
 
 		return filtered;
-	}, [leads, searchTerm, sortField, sortDirection, statusFilters]);
+	}, [leadsData, searchTerm, sortField, sortDirection, statusFilters]);
 
 	const handleSort = (field: SortField) => {
 		if (sortField === field) {
@@ -187,8 +206,21 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									<td className="px-6 py-4 whitespace-nowrap">
 										<div className="text-sm text-gray-900">{lead.company}</div>
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										<div className="text-sm text-gray-600">{lead.email}</div>
+									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+										{editingCell?.leadId === lead.id && editingCell?.field === "email" ? (
+											<input
+												type="text"
+												defaultValue={lead.email}
+												onBlur={(e) => handleUpdateLead(lead.id, "email", e.target.value)}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") handleUpdateLead(lead.id, "email", e.currentTarget.value);
+													if (e.key === "Escape") setEditingCell(null);
+												}}
+												autoFocus
+											/>
+										) : (
+											<div className="text-sm text-gray-600" onClick={(e) => { e.stopPropagation(); setEditingCell({ leadId: lead.id, field: "email" }); }}>{lead.email}</div>
+										)}
 									</td>
 									<td className="px-6 py-4 whitespace-nowrap">
 										<span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
@@ -198,8 +230,21 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 									<td className="px-6 py-4 whitespace-nowrap">
 										<ScoreBadge score={lead.score} />
 									</td>
-									<td className="px-6 py-4 whitespace-nowrap">
-										<StatusBadge status={lead.status} />
+									<td className="px-6 py-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+										{editingCell?.leadId === lead.id && editingCell?.field === "status" ? (
+											<select
+												defaultValue={lead.status}
+												onBlur={(e) => handleUpdateLead(lead.id, "status", e.target.value)}
+												onChange={(e) => handleUpdateLead(lead.id, "status", e.target.value)}
+												autoFocus
+											>
+												{uniqueStatuses.map(status => <option key={status} value={status}>{status}</option>)}
+											</select>
+										) : (
+											<div onClick={(e) => { e.stopPropagation(); setEditingCell({ leadId: lead.id, field: "status" }); }}>
+												<StatusBadge status={lead.status} />
+											</div>
+										)}
 									</td>
 								</tr>
 							))}
