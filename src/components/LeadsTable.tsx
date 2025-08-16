@@ -29,8 +29,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 			const matchesSearch =
 				!searchTerm ||
 				lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				lead.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+				lead.company.toLowerCase().includes(searchTerm.toLowerCase());
 
 			return matchesSearch;
 		});
@@ -93,7 +92,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({ leads }) => {
 								<SearchBar
 									value={searchTerm}
 									onChange={setSearchTerm}
-									placeholder="Search by name, company, or email..."
+									placeholder="Search by name or company"
 								/>
 							</div>
 
