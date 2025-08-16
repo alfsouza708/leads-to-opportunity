@@ -203,7 +203,14 @@ export const LeadDetailsPanel: React.FC<LeadDetailsPanelProps> = ({
 								</div>
 							</div>
 
-							<button className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer font-bold">
+							<button
+								className={`w-full flex items-center justify-center px-4 py-2 rounded-lg transition-colors font-bold ${
+									lead.score >= 60
+										? "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+										: "bg-gray-300 text-gray-500 cursor-not-allowed"
+								}`}
+								disabled={lead.score < 60}
+							>
 								Convert Lead
 							</button>
 						</div>
